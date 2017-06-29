@@ -66,10 +66,14 @@ class Sitemap(object):
 
     def get_urls(self, page=1):
         from django.contrib.sites.models import Site
+        if getattr(settings, 'SSL', False):
+            protocol = 'https'
+        else:
+            protocol = 'http'
         current_site = Site.objects.get_current()
         urls = []
         for item in self.paginator.page(page).object_list:
-            loc = "http://%s%s" % (current_site.domain, self.__get('location', item))
+            loc = "%s://%s%s" % (protocol, current_site.domain, self.__get('location', item))
             url_info = {
                 'location':   loc,
                 'lastmod':    self.__get('lastmod', item, None),
