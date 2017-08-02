@@ -4,8 +4,9 @@ from django.conf import settings
 
 class RedirectFallbackMiddleware(object):
     def process_response(self, request, response):
-        if response.status_code != 404:
-            return response # No need to check for a redirect for non-404 responses.
+        # we want to redirect regardless of 404
+        """if response.status_code != 404:
+            return response # No need to check for a redirect for non-404 responses."""
         path = request.get_full_path()
         try:
             r = Redirect.objects.get(site__id__exact=settings.SITE_ID, old_path=path)
